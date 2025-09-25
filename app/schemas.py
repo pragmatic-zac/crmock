@@ -62,3 +62,33 @@ class CustomerResponse(CustomerBase):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+class CreditCheckRequest(BaseModel):
+    customer_id: str
+    callback_url: str
+    wait_seconds: int = 5
+
+    @field_validator('wait_seconds')
+    @classmethod
+    def validate_wait_seconds(cls, v):
+        if v < 1 or v > 60:
+            raise ValueError('wait_seconds must be between 1 and 60')
+        return v
+
+    @field_validator('callback_url')
+    @classmethod
+    def validate_callback_url(cls, v):
+        url_regex = r'^https?://[^\s/$.?#].[^\s]*$'
+        if not re.match(url_regex, v):
+            raise ValueError('Invalid callback URL')
+        return v
+
+class CreditCheckResponse(BaseModel):
+    message: str
+    task_id: str
+
+class CreditCheckCallback(BaseModel):
+    customer_id: str
+    credit_score: int
+    risk_level: str
+    timestamp: datetime

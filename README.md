@@ -59,6 +59,12 @@ All customer endpoints require Basic Authentication.
 - `PUT /api/customers/{id}` - Update a customer
 - `DELETE /api/customers/{id}` - Delete a customer
 
+### Credit Check
+
+Simulate long-running processing with callbacks.
+
+- `POST /api/credit-check` - Initiate a mock credit check (requires authentication)
+
 ## Usage Example
 
 ### Register a new user
@@ -89,6 +95,19 @@ curl -X POST http://localhost:8000/api/customers \
 ```bash
 curl -X GET http://localhost:8000/api/customers \
   -u testuser:testpass123
+```
+
+### Initiate a credit check (with callback)
+
+```bash
+curl -X POST http://localhost:8000/api/credit-check/ \
+  -u testuser:testpass123 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customer_id": "customer-uuid-here",
+    "callback_url": "https://your-server.com/webhook/credit-result",
+    "wait_seconds": 10
+  }'
 ```
 
 ## Deployment on Fly.io
